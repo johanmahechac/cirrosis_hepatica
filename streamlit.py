@@ -67,9 +67,6 @@ df = pd.read_csv(file_path)
 df.info()
 
 
-st.set_page_config(page_title="PCA Streamlit App", layout="wide")
-st.title("PCA and MCA Analysis with NHANES Data")
-
 @st.cache_data
 def load_data():
     url = "https://raw.githubusercontent.com/jflorez-giraldo/Nhanes-streamlit/main/nhanes_2015_2016.csv"
