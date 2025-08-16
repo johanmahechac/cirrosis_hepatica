@@ -51,7 +51,6 @@ warnings.filterwarnings("ignore")
 st.set_page_config(page_title="Cirrosis Hepatica Streamlit App", layout="wide")
 st.title("Clasificación de los estadios de la cirrosis hepática con métodos de Machine Learning")
 
-
 # Descargar el dataset
 path = kagglehub.dataset_download("aadarshvelu/liver-cirrhosis-stage-classification")
 print("Ruta local del dataset:", path)
@@ -63,8 +62,8 @@ for dirname, _, filenames in os.walk(path):
 
 file_path = os.path.join(path, "liver_cirrhosis.csv")
 df = pd.read_csv(file_path)
-
-df.info()
+st.df.info()
+# ________________________________________________________________________________________________________________________________________________________________
 
 
 @st.cache_data
