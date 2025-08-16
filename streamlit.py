@@ -62,7 +62,14 @@ for dirname, _, filenames in os.walk(path):
 
 file_path = os.path.join(path, "liver_cirrhosis.csv")
 df = pd.read_csv(file_path)
-st.df.info()
+
+# Filtrar solo columnas categóricas (tipo "object" o "category")
+cat_cols = df.select_dtypes(include=['object', 'category'])
+
+# Mostrar la tabla en Streamlit
+st.subheader("Variables categóricas del dataset")
+st.dataframe(cat_cols)
+
 # ________________________________________________________________________________________________________________________________________________________________
 
 
