@@ -81,9 +81,43 @@ texto = """
 ### **Dimensiones del dataset**
 - **Tamaño:** 25 000 filas, 19 columnas  
 - **Faltantes:** 0% en todas las columnas  
+
+---
 """
 
 st.markdown(texto)
+
+
+st.markdown("""### Análisis de variables categóricas""")
+
+resumen_cat = []
+
+for col in variables_categoricas:
+    conteos = df[col].value_counts(dropna=False)
+    total = len(df)
+    for categoria, conteo in conteos.items():
+        porcentaje = round(conteo / total * 100, 2)
+        resumen_cat.append({
+            "Variable": col,
+            "Categoría": categoria,
+            "Conteo": conteo,
+            "Porcentaje (%)": porcentaje
+        })
+
+tabla_resumen = pd.DataFrame(resumen_cat)
+tabla_resumen = tabla_resumen.sort_values(
+    ["Variable", "Porcentaje (%)"],
+    ascending=[True, False]
+)
+
+# --- Mostrar en Streamlit ---
+st.subheader("Resumen de variables categóricas")
+st.dataframe(tabla_resumen, use_container_width=True)
+
+
+
+st.markdown("""### Análisis de variables numéricas""")
+
 
 
 # Descargar el dataset
