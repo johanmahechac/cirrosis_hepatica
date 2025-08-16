@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import kagglehub
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -45,11 +47,11 @@ from sklearn.model_selection import cross_val_score
 import warnings
 warnings.filterwarnings("ignore")
 
-# Instalar kagglehub y configurar Kaggle API
-#!pip install kagglehub[pandas-datasets]
 
-import kagglehub
-import os
+st.set_page_config(page_title="Cirrosis Hepatica Streamlit App", layout="wide")
+st.title("Clasificación de los estadios de la cirrosis hepática con métodos de Machine Learning")
+
+
 # Descargar el dataset
 path = kagglehub.dataset_download("aadarshvelu/liver-cirrhosis-stage-classification")
 print("Ruta local del dataset:", path)
@@ -58,7 +60,6 @@ print("Ruta local del dataset:", path)
 for dirname, _, filenames in os.walk(path):
     for filename in filenames:
         print(os.path.join(dirname, filename))
-
 
 file_path = os.path.join(path, "liver_cirrhosis.csv")
 df = pd.read_csv(file_path)
