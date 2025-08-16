@@ -83,11 +83,23 @@ cat_summary = pd.DataFrame({
 
 # Variables numéricas
 num_summary = pd.DataFrame({
-    'Variable': df.select_dtypes(include=['int64', 'float64']).columns,
-    'Tipo de dato': [df[col].dtype for col in df.select_dtypes(include=['int64', 'float64']).columns],
-    'Nº de valores únicos': [df[col].nunique() for col in df.select_dtypes(include=['int64', 'float64']).columns],
-    'Valores únicos': [df[col].unique() if df[col].nunique() <= 10 else df[col].unique()[:10] for col in df.select_dtypes(include=['int64', 'float64']).columns] # muestra máximo 10 valores
+    'Variable': num_cols.columns,
+    'Tipo de dato': [num_cols[col].dtype for col in num_cols.columns],
+    'Mínimo': [num_cols[col].min() for col in num_cols.columns],
+    'Máximo': [num_cols[col].max() for col in num_cols.columns],
+    'Media': [num_cols[col].mean() for col in num_cols.columns],
+    'Desviación estándar': [num_cols[col].std() for col in num_cols.columns]
 })
+num_summary = num_summary.round(2)
+
+# Crear resumen
+summary = pd.DataFrame({
+    'Variable': num_cols.columns,
+    'Tipo de dato': [num_cols[col].dtype for col in num_cols.columns],
+    'Mínimo': [num_cols[col].min() for col in num_cols.columns],
+    'Máximo': [num_cols[col].max() for col in num_cols.columns],
+    'Media': [num_cols[col].mean() for col in num_cols.columns],
+    'Desviación estándar': [num_cols[col].std() for col in num_cols.columns]
 
 # --- Mostrar en Streamlit en dos columnas ---
 col1, col2 = st.columns(2)
