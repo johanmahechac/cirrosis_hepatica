@@ -82,6 +82,7 @@ cat_summary = pd.DataFrame({
 })
 
 # Variables numéricas
+num_cols = df.select_dtypes(include=['number'])
 num_summary = pd.DataFrame({
     'Variable': num_cols.columns,
     'Tipo de dato': [num_cols[col].dtype for col in num_cols.columns],
