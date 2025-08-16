@@ -73,11 +73,34 @@ st.dataframe(df.head(10), use_container_width=True)
 cat_cols = df.select_dtypes(include=['object', 'category'])
 
 # Crear resumen
-summary = pd.DataFrame({
-    'Variable': cat_cols.columns,
-    'Tipo de dato': [cat_cols[col].dtype for col in cat_cols.columns],
-    'Nº de categorías únicas': [cat_cols[col].nunique() for col in cat_cols.columns]
+# Variables categóricas
+cat_summary = pd.DataFrame({
+    'Variable': df.select_dtypes(include=['object', 'category']).columns,
+    'Tipo de dato': [df[col].dtype for col in df.select_dtypes(include=['object', 'category']).columns],
+    'Nº de categorías únicas': [df[col].nunique() for col in df.select_dtypes(include=['object', 'category']).columns],
+    'Categorías': [df[col].unique() for col in df.select_dtypes(include=['object', 'category']).columns]
 })
+
+# Variables numéricas
+num_summary = pd.DataFrame({
+    'Variable': df.select_dtypes(include=['int64', 'float64']).columns,
+    'Tipo de dato': [df[col].dtype for col in df.select_dtypes(include=['int64', 'float64']).columns],
+    'Nº de valores únicos': [df[col].nunique() for col in df.select_dtypes(include=['int64', 'float64']).columns],
+    'Valores únicos': [df[col].unique() if df[col].nunique() <= 10 else df[col].unique()[:10] for col in df.select_dtypes(include=['int64', 'float64']).columns] # muestra máximo 10 valores
+})
+
+# --- Mostrar en Streamlit en dos columnas ---
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Resumen Variables Categóricas")
+    st.dataframe(cat_summary)
+
+with col2:
+    st.subheader("Resumen Variables Numéricas")
+    st.dataframe(num_summary)
+
+
 
 # Mostrar la tabla
 st.dataframe(summary)
