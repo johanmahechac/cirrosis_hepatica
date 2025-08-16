@@ -69,41 +69,53 @@ cat_cols = df.select_dtypes(include=['object', 'category'])
 st.subheader("Primeras 10 filas del dataset")
 st.dataframe(df.head(10), use_container_width=True)
 
-# Seleccionar columnas categóricas
-cat_cols = df.select_dtypes(include=['object', 'category'])
+# Ocupa todo el ancho de pantalla
+st.set_page_config(layout="wide")
 
-# Crear resumen
-# Variables categóricas
+# ------- Helpers -------
+def format_uniques(series, max_items=20):
+    """Convierte valores únicos a una cadena legible, acota a max_items."""
+    uniques = pd.Series(series.dropna().unique())
+    head = uniques.head(max_items).astype(str).tolist()
+    txt = ", ".join(head)
+    if uniques.size > max_items:
+        txt += f" … (+{uniques.size - max_items} más)"
+    return txt
+
+# ------- Detectar tipos -------
+cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+num_cols = df.select_dtypes(include=["number"]).columns.tolist()
+
+# ------- Resumen variables categóricas -------
 cat_summary = pd.DataFrame({
-    'Variable': df.select_dtypes(include=['object', 'category']).columns,
-    'Tipo de dato': [df[col].dtype for col in df.select_dtypes(include=['object', 'category']).columns],
-    'Nº de categorías únicas': [df[col].nunique() for col in df.select_dtypes(include=['object', 'category']).columns],
-    'Categorías': [df[col].unique() for col in df.select_dtypes(include=['object', 'category']).columns]
+    "Variable": cat_cols,
+    "Tipo de dato": [df[c].dtype for c in cat_cols],
+    "Nº de categorías únicas": [df[c].nunique(dropna=True) for c in cat_cols],
+    "Nº de datos no nulos": [df[c].notna().sum() for c in cat_cols],
+    "Categorías": [format_uniques(df[c], max_items=20) for c in cat_cols],
 })
 
-# Variables numéricas
-num_cols = df.select_dtypes(include=['number'])
+# ------- Resumen variables numéricas -------
 num_summary = pd.DataFrame({
-    'Variable': num_cols.columns,
-    'Tipo de dato': [num_cols[col].dtype for col in num_cols.columns],
-    'Mínimo': [num_cols[col].min() for col in num_cols.columns],
-    'Máximo': [num_cols[col].max() for col in num_cols.columns],
-    'Media': [num_cols[col].mean() for col in num_cols.columns],
-    'Desviación estándar': [num_cols[col].std() for col in num_cols.columns]
-})
-num_summary = num_summary.round(2)
+    "Variable": num_cols,
+    "Tipo de dato": [df[c].dtype for c in num_cols],
+    "Nº de datos no nulos": [df[c].notna().sum() for c in num_cols],
+    "Mínimo": [df[c].min(skipna=True) for c in num_cols],
+    "Máximo": [df[c].max(skipna=True) for c in num_cols],
+    "Media":  [df[c].mean(skipna=True) for c in num_cols],
+    "Desviación estándar": [df[c].std(skipna=True) for c in num_cols],
+}).round(2)
 
-# --- Mostrar en Streamlit en dos columnas ---
-col1, col2 = st.columns(2)
+# ------- Mostrar en dos columnas iguales con separación uniforme -------
+col1, col2 = st.columns(2, gap="large")
 
 with col1:
-    st.subheader("Resumen Variables Categóricas")
-    st.dataframe(cat_summary)
+    st.subheader("Resumen variables categóricas")
+    st.dataframe(cat_summary, use_container_width=True)
 
 with col2:
-    st.subheader("Resumen Variables Numéricas")
-    st.dataframe(num_summary)
-
+    st.subheader("Resumen variables numéricas")
+    st.dataframe(num_summary, use_container_width=True)
 
 # ________________________________________________________________________________________________________________________________________________________________
 
