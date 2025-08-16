@@ -1,25 +1,68 @@
+# Cargue de librerías
 import numpy as np
-import streamlit as st
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.impute import SimpleImputer
-from sklearn.decomposition import PCA
-from sklearn.model_selection import cross_val_score, StratifiedKFold
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_selection import SelectKBest, f_classif, RFE
-from sklearn.pipeline import Pipeline
-from imblearn.over_sampling import SMOTE
-from imblearn.pipeline import Pipeline as ImbPipeline
 import matplotlib.pyplot as plt
 import seaborn as sns
-from mca import MCA  # Asegúrate de tener instalada la librería: pip install mca
-from sklearn.base import BaseEstimator, TransformerMixin
-import prince
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.feature_selection import SequentialFeatureSelector
-from sklearn.compose import ColumnTransformer
+
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.feature_selection import mutual_info_classif
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.feature_selection import f_classif
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.model_selection import cross_val_score
+from numpy import mean
+from numpy import std
+from sklearn.datasets import make_regression
+from sklearn.feature_selection import f_regression
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import Perceptron
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from matplotlib import pyplot
+
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from sklearn.model_selection import cross_val_score
+
+import warnings
+warnings.filterwarnings("ignore")
+
+# Instalar kagglehub y configurar Kaggle API
+!pip install kagglehub[pandas-datasets]
+
+import kagglehub
+import os
+# Descargar el dataset
+path = kagglehub.dataset_download("aadarshvelu/liver-cirrhosis-stage-classification")
+print("Ruta local del dataset:", path)
+
+# Ver los archivos del dataset cargado
+for dirname, _, filenames in os.walk(path):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+
+
+file_path = os.path.join(path, "liver_cirrhosis.csv")
+df = pd.read_csv(file_path)
+
+df.info()
 
 
 st.set_page_config(page_title="PCA Streamlit App", layout="wide")
