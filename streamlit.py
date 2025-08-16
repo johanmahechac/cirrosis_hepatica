@@ -66,6 +66,23 @@ df = pd.read_csv(file_path)
 # Filtrar solo columnas categóricas (tipo "object" o "category")
 cat_cols = df.select_dtypes(include=['object', 'category'])
 
+st.subheader("Primeras 10 filas del dataset")
+st.dataframe(df.head(10), use_container_width=True)
+
+# Seleccionar columnas categóricas
+cat_cols = df.select_dtypes(include=['object', 'category'])
+
+# Crear resumen
+summary = pd.DataFrame({
+    'Variable': cat_cols.columns,
+    'Tipo de dato': [cat_cols[col].dtype for col in cat_cols.columns],
+    'Nº de categorías únicas': [cat_cols[col].nunique() for col in cat_cols.columns]
+})
+
+# Mostrar la tabla
+st.dataframe(summary)
+
+
 # Mostrar la tabla en Streamlit
 st.subheader("Variables categóricas del dataset")
 st.dataframe(cat_cols)
