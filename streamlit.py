@@ -54,7 +54,7 @@ st.title("Clasificación de los estadios de la cirrosis hepática con métodos d
 st.caption("Estudio clínico de cirrosis hepática — ficha de variables")
 
 texto = """
-## **Variables:**
+### **Variables:**
 
 * **N_Days**: Número de días transcurridos entre el registro y la fecha más temprana entre fallecimiento, trasplante o análisis del estudio en 1986.  
 * **Status**: estado del paciente C (censurado), CL (censurado por tratamiento hepático) o D (fallecimiento).  
