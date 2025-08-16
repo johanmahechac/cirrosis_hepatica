@@ -152,8 +152,7 @@ with col2:
     st.subheader("Resumen variables numéricas")
     st.dataframe(num_summary, use_container_width=True)
 
-
-
+#####--------------------------------------------------------------------------------------#########
 
 st.markdown("""### Análisis de variables categóricas""")
 st.caption("Selecciona una variable para ver su distribución en tabla y gráfico de torta.")
@@ -227,13 +226,6 @@ with tcol:
         use_container_width=True
     )
 
-    st.download_button(
-        "⬇️ Descargar tabla (CSV)",
-        data_table.to_csv(index=False).encode("utf-8"),
-        file_name=f"resumen_{var}.csv",
-        mime="text/csv",
-    )
-
 with gcol:
     st.subheader("Gráfico de torta")
     chart = (
@@ -267,7 +259,78 @@ with c3:
 st.caption("Consejo: usa **Top N** para simplificar la lectura y agrupar categorías poco frecuentes en 'Otros'.")
 
 
+
+
+
+
 st.markdown("""### Análisis de variables numéricas""")
+# =========================
+# Análisis de variables numéricas
+# =========================
+st.markdown("""### Análisis de variables numéricas""")
+st.caption("Selecciona una variable para ver su distribución en tabla, boxplot e histograma.")
+
+# Detectar variables numéricas
+variables_numericas = df.select_dtypes(include=["number"]).columns.tolist()
+
+if not variables_numericas:
+    st.warning("No se detectaron variables numéricas en `df`.")
+    st.stop()
+
+# Controles (Sidebar)
+st.sidebar.header("Controles - Numéricas")
+var_num = st.sidebar.selectbox("Variable numérica", options=variables_numericas, index=0, key="num_var")
+bins = st.sidebar.slider("Número de bins (histograma)", min_value=5, max_value=100, value=30, step=5)
+
+# Preparar serie
+serie_num = df[var_num].dropna()
+
+# =========================
+# Métricas descriptivas
+# =========================
+c1, c2, c3, c4, c5 = st.columns(5)
+with c1:
+    st.metric("Nº datos no nulos", f"{serie_num.shape[0]:,}".replace(",", "."))
+with c2:
+    st.metric("Mínimo", f"{serie_num.min():.2f}")
+with c3:
+    st.metric("Máximo", f"{serie_num.max():.2f}")
+with c4:
+    st.metric("Media", f"{serie_num.mean():.2f}")
+with c5:
+    st.metric("Desv. Estándar", f"{serie_num.std():.2f}")
+
+# =========================
+# Gráficos
+# =========================
+g1, g2 = st.columns(2, gap="large")
+
+with g1:
+    st.subheader(f"Boxplot de `{var_num}`")
+    box_data = pd.DataFrame({var_num: serie_num})
+    box_chart = (
+        alt.Chart(box_data)
+        .mark_boxplot()
+        .encode(y=alt.Y(var_num, type="quantitative"))
+        .properties(height=300)
+    )
+    st.altair_chart(box_chart, use_container_width=True)
+
+with g2:
+    st.subheader(f"Histograma de `{var_num}`")
+    hist_data = pd.DataFrame({var_num: serie_num})
+    hist_chart = (
+        alt.Chart(hist_data)
+        .mark_bar()
+        .encode(
+            alt.X(var_num, bin=alt.Bin(maxbins=bins)),
+            y='count()',
+            tooltip=[alt.Tooltip(var_num, bin=alt.Bin(maxbins=bins)), alt.Tooltip('count()', title="Frecuencia")]
+        )
+        .properties(height=300)
+    )
+    st.altair_chart(hist_chart, use_container_width=True)
+
 # ________________________________________________________________________________________________________________________________________________________________
 
 
