@@ -92,15 +92,6 @@ num_summary = pd.DataFrame({
 })
 num_summary = num_summary.round(2)
 
-# Crear resumen
-summary = pd.DataFrame({
-    'Variable': num_cols.columns,
-    'Tipo de dato': [num_cols[col].dtype for col in num_cols.columns],
-    'Mínimo': [num_cols[col].min() for col in num_cols.columns],
-    'Máximo': [num_cols[col].max() for col in num_cols.columns],
-    'Media': [num_cols[col].mean() for col in num_cols.columns],
-    'Desviación estándar': [num_cols[col].std() for col in num_cols.columns]
-
 # --- Mostrar en Streamlit en dos columnas ---
 col1, col2 = st.columns(2)
 
