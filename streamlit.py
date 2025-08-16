@@ -51,6 +51,41 @@ warnings.filterwarnings("ignore")
 st.set_page_config(page_title="Cirrosis Hepatica Streamlit App", layout="wide")
 st.title("Clasificación de los estadios de la cirrosis hepática con métodos de Machine Learning")
 
+st.caption("Estudio clínico de cirrosis hepática — ficha de variables")
+
+texto = """
+## **Variables:**
+
+* **N_Days**: Número de días transcurridos entre el registro y la fecha más temprana entre fallecimiento, trasplante o análisis del estudio en 1986.  
+* **Status**: estado del paciente C (censurado), CL (censurado por tratamiento hepático) o D (fallecimiento).  
+* **Drug**: tipo de fármaco: D-penicilamina o placebo.  
+* **Age**: edad en días.  
+* **Sex**: M (hombre) o F (mujer).  
+* **Ascites**: presencia de ascitis N (No) o Y (Sí).  
+* **Hepatomegaly**: presencia de hepatomegalia N (No) o Y (Sí).  
+* **Spiders**: presencia de aracnosis N (No) o Y (Sí).  
+* **Edema**: presencia de edema N (sin edema ni tratamiento diurético), S (edema presente sin diuréticos o resuelto con diuréticos) o Y (edema a pesar del tratamiento diurético).  
+* **Bilirubin**: bilirrubina sérica en mg/dl.  
+* **Cholesterol**: colesterol sérico en mg/dl.  
+* **Albumin**: albúmina en g/dl.  
+* **Copper**: cobre en orina en µg/día.  
+* **Alk_Phos**: fosfatasa alcalina en U/litro.  
+* **SGOT**: SGOT en U/ml.  
+* **Tryglicerides**: triglicéridos en mg/dl.  
+* **Platelets**: plaquetas por metro cúbico [ml/1000].  
+* **Prothrombin**: tiempo de protrombina en segundos.  
+* **Stage**: estadio histológico de la enfermedad (1, 2 o 3).  
+
+---
+
+### **Dimensiones del dataset**
+- **Tamaño:** 25 000 filas, 19 columnas  
+- **Faltantes:** 0% en todas las columnas  
+"""
+
+st.markdown(texto)
+
+
 # Descargar el dataset
 path = kagglehub.dataset_download("aadarshvelu/liver-cirrhosis-stage-classification")
 print("Ruta local del dataset:", path)
@@ -68,9 +103,6 @@ cat_cols = df.select_dtypes(include=['object', 'category'])
 
 st.subheader("Primeras 10 filas del dataset")
 st.dataframe(df.head(10), use_container_width=True)
-
-# Ocupa todo el ancho de pantalla
-# st.set_page_config(layout="wide")
 
 # ------- Helpers -------
 def format_uniques(series, max_items=20):
