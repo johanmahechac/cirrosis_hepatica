@@ -45,7 +45,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Instalar kagglehub y configurar Kaggle API
-!pip install kagglehub[pandas-datasets]
+#!pip install kagglehub[pandas-datasets]
 
 import kagglehub
 import os
