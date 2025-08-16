@@ -70,7 +70,7 @@ st.subheader("Primeras 10 filas del dataset")
 st.dataframe(df.head(10), use_container_width=True)
 
 # Ocupa todo el ancho de pantalla
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
 # ------- Helpers -------
 def format_uniques(series, max_items=20):
