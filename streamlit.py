@@ -105,15 +105,6 @@ with col2:
     st.dataframe(num_summary)
 
 
-
-# Mostrar la tabla
-st.dataframe(summary)
-
-
-# Mostrar la tabla en Streamlit
-st.subheader("Variables categóricas del dataset")
-st.dataframe(cat_cols)
-
 # ________________________________________________________________________________________________________________________________________________________________
 
 
