@@ -439,11 +439,15 @@ st.pyplot(fig3)
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.2. PCA""")
 
-df_num=df.select_dtypes(include=['int64','float64'])
+df_num = df.select_dtypes(include=['int64', 'float64'])
 df_num.info()
+
 X = df_num
 y = df['Stage']
-X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.33, random_state=1)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, stratify=y, test_size=0.33, random_state=1
+)
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_train)
@@ -453,49 +457,46 @@ pca = PCA()
 X_pca = pca.fit_transform(X_scaled)
 
 # Varianza acumulada
-explained_var = np.cumsum(pca.explained_variance_ratio_) #permite ver la varianza que tiene cada una de las componentes principales
+explained_var = np.cumsum(pca.explained_variance_ratio_)
 
-plt.figure(figsize=(8,5))
-plt.plot(range(1, len(explained_var) + 1), explained_var, marker='o', linestyle='--')
-plt.axhline(y=0.8, color='r', linestyle='-')
-plt.xlabel('Número de componentes principales')
-plt.ylabel('Varianza acumulada explicada')
-plt.title('Varianza acumulada explicada por PCA')
-plt.grid(True)
-plt.show()
+fig, ax = plt.subplots(figsize=(8,5))
+ax.plot(range(1, len(explained_var) + 1), explained_var, marker='o', linestyle='--')
+ax.axhline(y=0.8, color='r', linestyle='-')
+ax.set_xlabel('Número de componentes principales')
+ax.set_ylabel('Varianza acumulada explicada')
+ax.set_title('Varianza acumulada explicada por PCA')
+ax.grid(True)
+st.pyplot(fig)
 
-n_dims_90 = np.argmax(explained_var >= 0.8) + 1  # +1 porque los índices empiezan en 0
-print(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.')
+n_dims_90 = np.argmax(explained_var >= 0.8) + 1
+st.write(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.')
 
 # Scatterplot PC1 vs PC2
-plt.figure(figsize=(8,6))
-sns.scatterplot(x=X_pca[:,0], y=X_pca[:,1], hue=y_train, palette='Set1', alpha=0.7)
-plt.xlabel('PC1')
-plt.ylabel('PC2')
-plt.title('Scatterplot PC1 vs PC2')
-plt.legend(title='Clase', labels=['Estadio 1', 'Estadio 2','Estadio 3'])
-plt.show()
+fig2, ax2 = plt.subplots(figsize=(8,6))
+sns.scatterplot(x=X_pca[:,0], y=X_pca[:,1], hue=y_train, palette='Set1', alpha=0.7, ax=ax2)
+ax2.set_xlabel('PC1')
+ax2.set_ylabel('PC2')
+ax2.set_title('Scatterplot PC1 vs PC2')
+ax2.legend(title='Clase', labels=['Estadio 1', 'Estadio 2', 'Estadio 3'])
+st.pyplot(fig2)
 
 loadings = pd.DataFrame(
     pca.components_.T,
-    columns=[f'PC{i+1}' for i in range(pca.n_components_)],  # ✅ Número real de PCs
+    columns=[f'PC{i+1}' for i in range(pca.n_components_)],
     index=X_train.columns
 )
 
-plt.figure(figsize=(12,8))
-sns.heatmap(loadings.iloc[:,:9], annot=True, cmap='coolwarm', center=0)
-plt.title('Heatmap de loadings (primeras 9 PCs)')
-plt.show()
+fig3, ax3 = plt.subplots(figsize=(12,8))
+sns.heatmap(loadings.iloc[:, :9], annot=True, cmap='coolwarm', center=0, ax=ax3)
+ax3.set_title('Heatmap de loadings (primeras 9 PCs)')
+st.pyplot(fig3)
 
-# Aplicar PCA
-pca = PCA(n_components=0.80)  # Selecciona número mínimo de PCs que expliquen 90% de la varianza
-X_pca = pca.fit_transform(X_scaled)
+# PCA con componentes que explican al menos 80% varianza
+pca_80 = PCA(n_components=0.80)
+X_pca_80 = pca_80.fit_transform(X_scaled)
 
-print(f"Número de componentes principales para explicar 80% varianza: {pca.n_components_}")
-print(f"Varianza explicada acumulada por estas componentes: {sum(pca.explained_variance_ratio_)*100:.4f}")
-
-st.markdown("""Tras aplicar el Análisis de Correspondencias Múltiples (MCA), se determinó que seis dimensiones son suficientes para explicar el 80 % de la varianza. Asimismo, se identificó que las variables que más influyen en las dos primeras dimensiones son edema, ascitis y arañas vasculares, todas en su categoría positiva (Y). Por otro lado, el Análisis de Componentes Principales (PCA) indicó que se requieren ocho componentes principales para explicar el mismo porcentaje de varianza, observándose que, en general, todas las variables numéricas presentan un nivel de contribución adecuado en las primeras ocho componentes. A partir de estas nuevas variables generadas, se construyó un nuevo conjunto de datos que será utilizado para la evaluación de distintos modelos de clasificación.""")
-
+st.write(f"Número de componentes principales para explicar 80% varianza: {pca_80.n_components_}")
+st.write(f"Varianza explicada acumulada por estas componentes: {sum(pca_80.explained_variance_ratio_)*100:.4f}%")
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.3. Concatenar las dos matrices""")
 
