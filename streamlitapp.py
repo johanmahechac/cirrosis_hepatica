@@ -487,21 +487,21 @@ loadings = pd.DataFrame(
     index=X_train.columns
 )
 
-# Asegúrate que X_pca tiene 3 componentes
-pca = PCA(n_components=3)
-X_pca = pca.fit_transform(X_scaled)
+# DataFrame con las tres primeras componentes
+df_pca = pd.DataFrame(X_pca[:, :3], columns=['PC1', 'PC2', 'PC3'])
 
-# Crear DataFrame para graficar
-df_pca = pd.DataFrame(X_pca, columns=['PC1', 'PC2', 'PC3'])
+# Asegúrate de que y_train tenga el mismo índice
 df_pca['Stage'] = y_train.reset_index(drop=True)
 
-# Gráfico interactivo 3D
 fig = px.scatter_3d(
-    df_pca, x='PC1', y='PC2', z='PC3',
+    df_pca,
+    x='PC1', y='PC2', z='PC3',
     color='Stage',
-    title='Gráfico 3D interactivo: PC1 vs PC2 vs PC3'
+    title='Gráfico 3D interactivo: PC1 vs PC2 vs PC3',
+    opacity=0.7
 )
 
+st.subheader('Gráfico 3D interactivo: PC1 vs PC2 vs PC3')
 st.plotly_chart(fig)
 
 fig3, ax3 = plt.subplots(figsize=(12,8))
