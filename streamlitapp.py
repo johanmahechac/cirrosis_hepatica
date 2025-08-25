@@ -35,6 +35,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from matplotlib import pyplot
+import plotly.express as px
 
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 from sklearn.linear_model import LogisticRegression
