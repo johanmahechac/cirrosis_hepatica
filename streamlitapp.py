@@ -679,36 +679,23 @@ random_svm = RandomizedSearchCV(svm, param_distributions=param_dist, n_iter=20,
 random_svm.fit(X_train_final, y_train)
 print("SVM - Best Params:", random_svm.best_params_)
 
-resultados_hyper = pd.DataFrame([
-    {
-        'Modelo': 'Logistic Regression',
-        'Accuracy CV': random_log.best_score_,
-        'Mejores Hiperparámetros': random_log.best_params_
-    },
-    {
-        'Modelo': 'KNN',
-        'Accuracy CV': random_knn.best_score_,
-        'Mejores Hiperparámetros': random_knn.best_params_
-    },
-    {
-        'Modelo': 'Decision Tree',
-        'Accuracy CV': random_tree.best_score_,
-        'Mejores Hiperparámetros': random_tree.best_params_
-    },
-    {
-        'Modelo': 'Random Forest',
-        'Accuracy CV': random_rf.best_score_,
-        'Mejores Hiperparámetros': random_rf.best_params_
-    },
-    {
-        'Modelo': 'SVM',
-        'Accuracy CV': random_svm.best_score_,
-        'Mejores Hiperparámetros': random_svm.best_params_
-    }
-])
+st.subheader("Mejores hiperparámetros por modelo")
 
-st.subheader("Resumen de Hiperparámetros Óptimos")
-st.dataframe(resultados_hyper, use_container_width=True)
+st.write("**Logistic Regression**")
+st.write(random_log.best_params_)
+st.write(f"Mejor accuracy (CV): {random_log.best_score_:.4f}")
+
+st.write("**KNN**")
+st.write(random_knn.best_params_)
+st.write(f"Mejor accuracy (CV): {random_knn.best_score_:.4f}")
+
+st.write("**Decision Tree**")
+st.write(random_tree.best_params_)
+st.write(f"Mejor accuracy (CV): {random_tree.best_score_:.4f}")
+
+st.write("**Random Forest**")
+st.write(random_rf.best_params_)
+st.write(f"Mejor accuracy (CV): {random_rf.best_score_:.4f}")
 
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""# 3. RFE""")
