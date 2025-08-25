@@ -370,11 +370,15 @@ st.markdown("""## 2.1. MCA""")
 
 # split into train and test sets
 
-df_cat=df.select_dtypes(include=['object','category'])
+df_cat = df.select_dtypes(include=['object', 'category'])
 df_cat.info()
-X = df_cat.drop('Stage', axis=1, errors='ignore')
-y = df_cat['Stage']
-X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.33, random_state=1) #### Verificar estratificado
+
+X = df_cat
+y = df['Stage']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, stratify=y, test_size=0.33, random_state=1
+)
 
 # Codificación del conjunto de entrenamiento
 X_train_encoded = pd.get_dummies(X_train)
