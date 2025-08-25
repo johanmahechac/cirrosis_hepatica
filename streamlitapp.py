@@ -405,8 +405,8 @@ plt.title('Varianza acumulada explicada por MCA')
 plt.grid(True)
 plt.show()
 
-n_dims_90 = np.argmax(cum_explained_var >= 0.8) + 1  # +1 porque los índices empiezan en 0
-print(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.')
+st.write(n_dims_90 = np.argmax(cum_explained_var >= 0.8) + 1  # +1 porque los índices empiezan en 0)
+st.write(print(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.'))
 
 # Coordenadas individuos (2 primeras dimensiones)
 coords = mca_cirrosis.fs_r(N=3)
