@@ -518,6 +518,47 @@ st.write(f"Varianza explicada acumulada por estas componentes: {sum(pca_80.expla
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.3. Concatenar las dos matrices""")
 
+# Datos numéricos
+
+# Escalar variables numéricas del entrenamiento
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # fit solo al train
+
+# Ajustar PCA al conjunto de entrenamiento
+pca = PCA(n_components=8)
+X_train_pca = pca.fit_transform(X_train_scaled)
+
+# Escalar el conjunto de prueba con el mismo scaler del entrenamiento
+X_test_scaled = scaler.transform(X_test)  # sin fit
+
+# Aplicar PCA ya entrenado al conjunto de prueba
+X_test_pca = pca.transform(X_test_scaled)  # sin fit
+
+# Datos categóricos
+
+# Fit solo con entrenamiento
+mca = prince.MCA(n_components=6, random_state=42)
+mca = mca.fit(X_train_encoded)
+
+# Transformación sobre entrenamiento y prueba
+X_train_mca = mca.transform(X_train_encoded)
+X_test_mca = mca.transform(X_test_encoded)
+
+X_train_pca_df = pd.DataFrame(X_train_pca, columns=[f'PCA_{i+1}' for i in range(X_train_pca.shape[1])])
+X_train_mca_df = pd.DataFrame(X_train_mca.values, columns=[f'MCA_{i+1}' for i in range(X_train_mca.shape[1])])
+
+X_train_final = pd.concat([X_train_pca_df, X_train_mca_df], axis=1)
+
+# para el conjunto de prueba
+
+X_test_pca_df = pd.DataFrame(X_test_pca, columns=[f'PCA_{i+1}' for i in range(X_test_pca.shape[1])])
+X_test_mca_df = pd.DataFrame(X_test_mca.values, columns=[f'MCA_{i+1}' for i in range(X_test_mca.shape[1])])
+
+X_test_final = pd.concat([X_test_pca_df, X_test_mca_df], axis=1)
+
+X_test_final.info()
+st.subheader("Dataset final con variables PCA + MCA (Test Set)")
+st.dataframe(X_test_final.head(10))  # Primeras 10 filas
 
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""# 3. RFE""")
