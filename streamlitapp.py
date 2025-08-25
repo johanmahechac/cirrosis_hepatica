@@ -601,7 +601,111 @@ if modelo_seleccionado:
     accuracy = accuracy_score(y_test, y_pred)
 
     st.success(f"Accuracy del modelo **{modelo_seleccionado}** en test set: **{accuracy:.4f}**")
+    
+# ________________________________________________________________________________________________________________________________________________________________
+st.markdown("""## 2.5. Ajuste de hiperparámetros""")
 
+from sklearn.linear_model import LogisticRegression
+
+param_dist = {
+    'C': uniform(0.01, 10),
+    'solver': ['lbfgs', 'saga'],
+    'multi_class': ['multinomial']
+}
+
+log_reg = LogisticRegression(max_iter=1000)
+random_log = RandomizedSearchCV(log_reg, param_distributions=param_dist, n_iter=20,
+                                cv=5, scoring='accuracy', n_jobs=-1, verbose=1, random_state=42)
+random_log.fit(X_train_final, y_train)
+print("Logistic Regression - Best Params:", random_log.best_params_)
+
+from sklearn.neighbors import KNeighborsClassifier
+
+param_dist = {
+    'n_neighbors': randint(3, 20),
+    'weights': ['uniform', 'distance'],
+    'metric': ['euclidean', 'manhattan']
+}
+
+knn = KNeighborsClassifier()
+random_knn = RandomizedSearchCV(knn, param_distributions=param_dist, n_iter=20,
+                                cv=5, scoring='accuracy', n_jobs=-1, verbose=1, random_state=42)
+random_knn.fit(X_train_final, y_train)
+print("KNN - Best Params:", random_knn.best_params_)
+
+from sklearn.tree import DecisionTreeClassifier
+
+param_dist = {
+    'max_depth': randint(3, 20),
+    'min_samples_split': randint(2, 10),
+    'criterion': ['gini', 'entropy']
+}
+
+tree = DecisionTreeClassifier()
+random_tree = RandomizedSearchCV(tree, param_distributions=param_dist, n_iter=20,
+                                 cv=5, scoring='accuracy', n_jobs=-1, verbose=1, random_state=42)
+random_tree.fit(X_train_final, y_train)
+print("Decision Tree - Best Params:", random_tree.best_params_)
+
+from sklearn.ensemble import RandomForestClassifier
+
+param_dist = {
+    'n_estimators': randint(100, 300),
+    'max_depth': randint(5, 30),
+    'min_samples_split': randint(2, 10),
+    'max_features': ['sqrt', 'log2']
+}
+
+rf = RandomForestClassifier()
+random_rf = RandomizedSearchCV(rf, param_distributions=param_dist, n_iter=20,
+                               cv=5, scoring='accuracy', n_jobs=-1, verbose=1, random_state=42)
+random_rf.fit(X_train_final, y_train)
+print("Random Forest - Best Params:", random_rf.best_params_)
+
+from sklearn.svm import SVC
+
+param_dist = {
+    'C': uniform(0.1, 10),
+    'kernel': ['linear', 'rbf', 'poly'],
+    'gamma': ['scale', 'auto']
+}
+
+svm = SVC()
+random_svm = RandomizedSearchCV(svm, param_distributions=param_dist, n_iter=20,
+                                cv=5, scoring='accuracy', n_jobs=-1, verbose=1, random_state=42)
+random_svm.fit(X_train_final, y_train)
+print("SVM - Best Params:", random_svm.best_params_)
+
+resultados_hyper = pd.DataFrame([
+    {
+        'Modelo': 'Logistic Regression',
+        'Accuracy CV': random_log.best_score_,
+        'Mejores Hiperparámetros': random_log.best_params_
+    },
+    {
+        'Modelo': 'KNN',
+        'Accuracy CV': random_knn.best_score_,
+        'Mejores Hiperparámetros': random_knn.best_params_
+    },
+    {
+        'Modelo': 'Decision Tree',
+        'Accuracy CV': random_tree.best_score_,
+        'Mejores Hiperparámetros': random_tree.best_params_
+    },
+    {
+        'Modelo': 'Random Forest',
+        'Accuracy CV': random_rf.best_score_,
+        'Mejores Hiperparámetros': random_rf.best_params_
+    },
+    {
+        'Modelo': 'SVM',
+        'Accuracy CV': random_svm.best_score_,
+        'Mejores Hiperparámetros': random_svm.best_params_
+    }
+])
+
+st.subheader("Resumen de Hiperparámetros Óptimos")
+st.dataframe(resultados_hyper, use_container_width=True)
 
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""# 3. RFE""")
