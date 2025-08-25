@@ -50,6 +50,7 @@ import mca
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import prince
+from sklearn.model_selection import RandomizedSearchCV
 
 import warnings
 warnings.filterwarnings("ignore")
