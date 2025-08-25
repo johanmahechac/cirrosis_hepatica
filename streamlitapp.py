@@ -446,7 +446,7 @@ st.markdown("""## 2.2. PCA""")
 df_num=df.select_dtypes(include=['int64','float64'])
 df_num.info()
 X = df_num
-y = df_cat['Stage']
+y = df['Stage']
 X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.33, random_state=1)
 
 scaler = StandardScaler()
