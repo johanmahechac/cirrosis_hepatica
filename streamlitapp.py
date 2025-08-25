@@ -561,6 +561,49 @@ st.subheader("Dataset final con variables PCA + MCA (Test Set)")
 st.dataframe(X_test_final.head(10))  # Primeras 10 filas
 
 # ________________________________________________________________________________________________________________________________________________________________
+st.markdown("""## 2.4. Modelado""")
+
+# Modelos
+models = {
+    'Logistic Regression': LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
+    'KNN': KNeighborsClassifier(),
+    'SVC': SVC(),
+    'Decision Tree': DecisionTreeClassifier(),
+    'Random Forest': RandomForestClassifier(),
+}
+
+# Evaluar modelos
+resultados = []
+
+for name, model in models.items():
+    scores = cross_val_score(model, X_train_final, y_train, cv=5, scoring='accuracy')
+    resultados.append({'Modelo': name, 'Accuracy promedio': scores.mean()})
+
+df_resultados = pd.DataFrame(resultados).sort_values(by='Accuracy promedio', ascending=False)
+
+# Mostrar resultados
+st.subheader("Comparación de modelos (accuracy promedio con CV)")
+st.dataframe(df_resultados, use_container_width=True)
+
+# Selección de modelo
+modelo_seleccionado = st.selectbox("Selecciona un modelo para entrenar y evaluar en test set:", df_resultados['Modelo'])
+
+if modelo_seleccionado:
+    modelo = models[modelo_seleccionado]
+
+    # Entrenar con todos los datos de entrenamiento
+    modelo.fit(X_train_final, y_train)
+
+    # Predecir en test
+    y_pred = modelo.predict(X_test_final)
+
+    # Calcular accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+
+    st.success(f"Accuracy del modelo **{modelo_seleccionado}** en test set: **{accuracy:.4f}**")
+
+
+# ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""# 3. RFE""")
 # ________________________________________________________________________________________________________________________________________________________________
 
