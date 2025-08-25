@@ -369,7 +369,6 @@ st.markdown("""# 2. MCA Y PCA""")
 st.markdown("""## 2.1. MCA""")
 
 # split into train and test sets
-
 df_cat = df.select_dtypes(include=['object', 'category'])
 df_cat.info()
 
@@ -396,32 +395,30 @@ explained_var = eigvals / eigvals.sum()
 cum_explained_var = np.cumsum(explained_var)
 
 # Graficar varianza acumulada
-plt.figure(figsize=(8,5))
-plt.plot(range(1, len(cum_explained_var)+1), cum_explained_var, marker='o', linestyle='--')
-plt.axhline(y=0.8, color='r', linestyle='-')
-plt.xlabel('Dimensiones MCA')
-plt.ylabel('Varianza acumulada explicada')
-plt.title('Varianza acumulada explicada por MCA')
-plt.grid(True)
-plt.show()
+fig1, ax1 = plt.subplots(figsize=(8,5))
+ax1.plot(range(1, len(cum_explained_var)+1), cum_explained_var, marker='o', linestyle='--')
+ax1.axhline(y=0.8, color='r', linestyle='-')
+ax1.set_xlabel('Dimensiones MCA')
+ax1.set_ylabel('Varianza acumulada explicada')
+ax1.set_title('Varianza acumulada explicada por MCA')
+ax1.grid(True)
+st.pyplot(fig1)
 
-st.write(n_dims_90 = np.argmax(cum_explained_var >= 0.8) + 1  # +1 porque los índices empiezan en 0)
-st.write(print(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.'))
+n_dims_90 = np.argmax(cum_explained_var >= 0.8) + 1  # +1 porque los índices empiezan en 0
+st.write(f'Se necesitan {n_dims_90} dimensiones para explicar al menos el 80% de la varianza.')
 
 # Coordenadas individuos (2 primeras dimensiones)
 coords = mca_cirrosis.fs_r(N=3)
 
-plt.figure(figsize=(8,6))
-sns.scatterplot(x=coords[:,0], y=coords[:,1], hue=y_train, palette='Set1', alpha=0.7)
-plt.xlabel('Dimensión 1')
-plt.ylabel('Dimensión 2')
-plt.title('Scatterplot MCA Dim 1 vs Dim 2')
-plt.legend(title='Clase', labels=['Estadio 1', 'Estadio 2','Estadio 3'])
-plt.show()
+fig2, ax2 = plt.subplots(figsize=(8,6))
+sns.scatterplot(x=coords[:,0], y=coords[:,1], hue=y_train, palette='Set1', alpha=0.7, ax=ax2)
+ax2.set_xlabel('Dimensión 1')
+ax2.set_ylabel('Dimensión 2')
+ax2.set_title('Scatterplot MCA Dim 1 vs Dim 2')
+ax2.legend(title='Clase', labels=['Estadio 1', 'Estadio 2','Estadio 3'])
+st.pyplot(fig2)
 
-#Para ver las cargas de cada variable en las primeras dos componentes
-
-# Coordenadas variables categóricas (loadings) primeras 2 dimensiones
+# Cargas variables categóricas (loadings) primeras 2 dimensiones
 loadings_cat = pd.DataFrame(mca_cirrosis.fs_c()[:, :2], index=X_train_encoded.columns)
 
 # Calcular contribución de cada variable (cuadrado / suma por dimensión)
@@ -431,14 +428,13 @@ contrib_cat = loadings_sq.div(loadings_sq.sum(axis=0), axis=1)
 # Sumar contribuciones por variable
 contrib_var = contrib_cat.sum(axis=1).sort_values(ascending=False)
 
-# Graficar contribuciones variables
-plt.figure(figsize=(12,6))
-contrib_var.plot(kind='bar', color='teal')
-plt.ylabel('Contribución total a Dim 1 y 2')
-plt.title('Contribución de variables a las primeras 2 dimensiones MCA')
-plt.xticks(rotation=45, ha='right')
-plt.tight_layout()
-plt.show()
+fig3, ax3 = plt.subplots(figsize=(12,6))
+contrib_var.plot(kind='bar', color='teal', ax=ax3)
+ax3.set_ylabel('Contribución total a Dim 1 y 2')
+ax3.set_title('Contribución de variables a las primeras 2 dimensiones MCA')
+ax3.set_xticklabels(ax3.get_xticklabels(), rotation=45, ha='right')
+fig3.tight_layout()
+st.pyplot(fig3)
 
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.2. PCA""")
