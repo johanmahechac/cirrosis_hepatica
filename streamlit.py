@@ -47,6 +47,7 @@ from sklearn.model_selection import cross_val_score
 import mca
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+import prince
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -493,6 +494,10 @@ X_pca = pca.fit_transform(X_scaled)
 print(f"Número de componentes principales para explicar 80% varianza: {pca.n_components_}")
 print(f"Varianza explicada acumulada por estas componentes: {sum(pca.explained_variance_ratio_)*100:.4f}")
 
+st.markdown("""Tras aplicar el Análisis de Correspondencias Múltiples (MCA), se determinó que seis dimensiones son suficientes para explicar el 80 % de la varianza. Asimismo, se identificó que las variables que más influyen en las dos primeras dimensiones son edema, ascitis y arañas vasculares, todas en su categoría positiva (Y). Por otro lado, el Análisis de Componentes Principales (PCA) indicó que se requieren ocho componentes principales para explicar el mismo porcentaje de varianza, observándose que, en general, todas las variables numéricas presentan un nivel de contribución adecuado en las primeras ocho componentes. A partir de estas nuevas variables generadas, se construyó un nuevo conjunto de datos que será utilizado para la evaluación de distintos modelos de clasificación.""")
+
+# ________________________________________________________________________________________________________________________________________________________________
+st.markdown("""## 2.3. Concatenar las dos matrices""")
 
 
 # ________________________________________________________________________________________________________________________________________________________________
