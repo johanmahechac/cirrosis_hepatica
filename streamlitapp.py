@@ -486,6 +486,27 @@ loadings = pd.DataFrame(
     index=X_train.columns
 )
 
+# Crear DataFrame con las 3 primeras PCs y la variable objetivo
+df_pca_3d = pd.DataFrame({
+    'PC1': X_pca[:, 0],
+    'PC2': X_pca[:, 1],
+    'PC3': X_pca[:, 2],
+    'Stage': y_train.values  # o convertir a string si es necesario
+})
+
+fig = px.scatter_3d(
+    df_pca_3d,
+    x='PC1',
+    y='PC2',
+    z='PC3',
+    color='Stage',
+    title='Gráfico 3D interactivo: PC1 vs PC2 vs PC3',
+    opacity=0.7,
+    color_discrete_sequence=px.colors.qualitative.Set1
+)
+
+st.plotly_chart(fig)
+
 fig3, ax3 = plt.subplots(figsize=(12,8))
 sns.heatmap(loadings.iloc[:, :9], annot=True, cmap='coolwarm', center=0, ax=ax3)
 ax3.set_title('Heatmap de loadings (primeras 9 PCs)')
