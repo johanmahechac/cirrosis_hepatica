@@ -52,6 +52,8 @@ from sklearn.decomposition import PCA
 import prince
 from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import randint
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -566,7 +568,6 @@ st.dataframe(X_test_final.head(10))  # Primeras 10 filas
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.4. Modelado""")
 
-# Modelos
 models = {
     'Logistic Regression': LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
     'KNN': KNeighborsClassifier(),
@@ -575,35 +576,16 @@ models = {
     'Random Forest': RandomForestClassifier(),
 }
 
-# Evaluar modelos
 resultados = []
 
 for name, model in models.items():
     scores = cross_val_score(model, X_train_final, y_train, cv=5, scoring='accuracy')
     resultados.append({'Modelo': name, 'Accuracy promedio': scores.mean()})
 
-df_resultados = pd.DataFrame(resultados).sort_values(by='Accuracy promedio', ascending=False)
+df_resultados = pd.DataFrame(resultados)
 
-# Mostrar resultados
-st.subheader("Comparación de modelos (accuracy promedio con CV)")
-st.dataframe(df_resultados, use_container_width=True)
-
-# Selección de modelo
-modelo_seleccionado = st.selectbox("Selecciona un modelo para entrenar y evaluar en test set:", df_resultados['Modelo'])
-
-if modelo_seleccionado:
-    modelo = models[modelo_seleccionado]
-
-    # Entrenar con todos los datos de entrenamiento
-    modelo.fit(X_train_final, y_train)
-
-    # Predecir en test
-    y_pred = modelo.predict(X_test_final)
-
-    # Calcular accuracy
-    accuracy = accuracy_score(y_test, y_pred)
-
-    st.success(f"Accuracy del modelo **{modelo_seleccionado}** en test set: **{accuracy:.4f}**")
+st.subheader("Resultados de validación cruzada (accuracy promedio)")
+st.table(df_resultados)
     
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""## 2.5. Ajuste de hiperparámetros""")
@@ -697,6 +679,47 @@ st.write("**Random Forest**")
 st.write(random_rf.best_params_)
 st.write(f"Mejor accuracy (CV): {random_rf.best_score_:.4f}")
 
+# ________________________________________________________________________________________________________________________________________________________________
+st.markdown("""## 2.6. Comparación de modelos optimizados""")
+
+modelos_optimizados = {
+    "Logistic Regression": random_log.best_estimator_,
+    "KNN": random_knn.best_estimator_,
+    "Decision Tree": random_tree.best_estimator_,
+    "Random Forest": random_rf.best_estimator_,
+    "SVM": random_svm.best_estimator_
+}
+
+resultados = []
+
+for nombre, modelo in modelos_optimizados.items():
+    scores_cv = cross_val_score(modelo, X_train_final, y_train, cv=5, scoring='accuracy')
+    mean_cv = scores_cv.mean()
+    std_cv = scores_cv.std()
+
+    modelo.fit(X_train_final, y_train)
+    y_pred = modelo.predict(X_test_final)
+    acc_test = accuracy_score(y_test, y_pred)
+
+    resultados.append({
+        'Modelo': nombre,
+        'Accuracy CV (media)': round(mean_cv, 4),
+        'Accuracy CV (std)': round(std_cv, 4),
+        'Accuracy Test': round(acc_test, 4)
+    })
+
+    st.markdown(f"### 📌 Modelo: {nombre}")
+    st.markdown(f"**Accuracy CV:** {mean_cv:.4f} ± {std_cv:.4f}")
+    st.markdown(f"**Accuracy Test:** {acc_test:.4f}")
+    st.text("📋 Classification Report:")
+    st.text(classification_report(y_test, y_pred))
+    st.text("🧩 Matriz de Confusión:")
+    st.text(confusion_matrix(y_test, y_pred))
+
+df_resultados = pd.DataFrame(resultados).sort_values(by='Accuracy Test', ascending=False)
+
+st.markdown("## ✅ Resumen Comparativo de Modelos")
+st.dataframe(df_resultados)
 # ________________________________________________________________________________________________________________________________________________________________
 st.markdown("""# 3. RFE""")
 # ________________________________________________________________________________________________________________________________________________________________
