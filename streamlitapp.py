@@ -372,7 +372,7 @@ st.markdown("""## 2.1. MCA""")
 
 df_cat=df.select_dtypes(include=['object','category'])
 df_cat.info()
-X = df_cat.drop('Stage', axis=1)
+X = df_cat.drop('Stage', axis=1, errors='ignore')
 y = df_cat['Stage']
 X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.33, random_state=1) #### Verificar estratificado
 
