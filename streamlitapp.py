@@ -499,21 +499,25 @@ loadings = pd.DataFrame(
     index=X_train.columns
 )
 
-import plotly.express as px
-import pandas as pd
-#gráfico en 3D
+#ráfico en 3D PCA
+# Escalar los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
 
-# Asegúrate de que el PCA tenga al menos 3 componentes
+# PCA con 3 componentes
 pca = PCA(n_components=3)
 X_pca = pca.fit_transform(X_scaled)
 
-# Crear DataFrame para facilitar el uso con plotly
+# Crear DataFrame con componentes principales y clases
 df_pca = pd.DataFrame({
     'PC1': X_pca[:, 0],
     'PC2': X_pca[:, 1],
     'PC3': X_pca[:, 2],
-    'Clase': y_train  # Asegúrate de que y_train esté alineado
+    'Clase': y_train
 })
+
+# (Opcional) mapear clases si son numéricas
+df_pca['Clase'] = df_pca['Clase'].map({0: 'Estadio 1', 1: 'Estadio 2', 2: 'Estadio 3'})
 
 # Crear gráfico interactivo
 fig = px.scatter_3d(
@@ -527,7 +531,7 @@ fig = px.scatter_3d(
     labels={'Clase': 'Estadio'}
 )
 
-# Mostrar gráfico
+# Mostrar en Streamlit
 st.plotly_chart(fig)
 
 fig3, ax3 = plt.subplots(figsize=(12,8))
