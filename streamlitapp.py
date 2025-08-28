@@ -499,6 +499,10 @@ loadings = pd.DataFrame(
     index=X_train.columns
 )
 
+st.write("X_pca shape:", X_pca.shape)
+st.write("y_train shape:", y_train.shape)
+st.write("Valores únicos en y_train:", y_train.unique())
+
 #ráfico en 3D PCA
 # Escalar los datos
 scaler = StandardScaler()
