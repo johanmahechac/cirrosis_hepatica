@@ -528,8 +528,8 @@ fig = px.scatter_3d(
 )
 
 # Mostrar gráfico
-fig.show()
------------------
+st.plotly_chart(fig)
+
 fig3, ax3 = plt.subplots(figsize=(12,8))
 sns.heatmap(loadings.iloc[:, :9], annot=True, cmap='coolwarm', center=0, ax=ax3)
 ax3.set_title('Heatmap de loadings (primeras 9 PCs)')
