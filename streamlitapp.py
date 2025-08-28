@@ -499,23 +499,37 @@ loadings = pd.DataFrame(
     index=X_train.columns
 )
 
-# DataFrame con las tres primeras componentes
-df_pca = pd.DataFrame(X_pca[:, :3], columns=['PC1', 'PC2', 'PC3'])
+import plotly.express as px
+import pandas as pd
+#gráfico en 3D
 
-# Asegúrate de que y_train tenga el mismo índice
-df_pca['Stage'] = y_train.reset_index(drop=True)
+# Asegúrate de que el PCA tenga al menos 3 componentes
+pca = PCA(n_components=3)
+X_pca = pca.fit_transform(X_scaled)
 
+# Crear DataFrame para facilitar el uso con plotly
+df_pca = pd.DataFrame({
+    'PC1': X_pca[:, 0],
+    'PC2': X_pca[:, 1],
+    'PC3': X_pca[:, 2],
+    'Clase': y_train  # Asegúrate de que y_train esté alineado
+})
+
+# Crear gráfico interactivo
 fig = px.scatter_3d(
     df_pca,
-    x='PC1', y='PC2', z='PC3',
-    color='Stage',
-    title='Gráfico 3D interactivo: PC1 vs PC2 vs PC3',
-    opacity=0.7
+    x='PC1',
+    y='PC2',
+    z='PC3',
+    color='Clase',
+    color_discrete_sequence=px.colors.qualitative.Set1,
+    title='PCA 3D - Componentes Principales',
+    labels={'Clase': 'Estadio'}
 )
 
-st.subheader('Gráfico 3D interactivo: PC1 vs PC2 vs PC3')
-st.plotly_chart(fig)
-
+# Mostrar gráfico
+fig.show()
+-----------------
 fig3, ax3 = plt.subplots(figsize=(12,8))
 sns.heatmap(loadings.iloc[:, :9], annot=True, cmap='coolwarm', center=0, ax=ax3)
 ax3.set_title('Heatmap de loadings (primeras 9 PCs)')
