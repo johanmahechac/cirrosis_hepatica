@@ -505,42 +505,47 @@ st.write("Valores únicos en y_train:", y_train.unique())
 
 #ráfico en 3D PCA
 
+# Escalar los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_train)
+
 # PCA con 3 componentes
 pca = PCA(n_components=3)
 X_pca = pca.fit_transform(X_scaled)
 
-# Crear DataFrame con componentes principales y clases
-df_pca = pd.DataFrame({
-    'PC1': X_pca[:, 0],
-    'PC2': X_pca[:, 1],
-    'PC3': X_pca[:, 2],
-    'Clase': y_train.values  # Asegura que es una columna alineada
-})
+# Crear DataFrame PCA
+df_pca = pd.DataFrame(X_pca, columns=['PC1', 'PC2', 'PC3'])
 
-# Mapear correctamente las clases 1, 2, 3
+# Asegurar que y_train está alineado y convertir a DataFrame
+df_pca['Clase'] = y_train.values
+
+# Mapeo correcto de clases 1, 2, 3
 df_pca['Clase'] = df_pca['Clase'].astype(int).map({
     1: 'Estadio 1',
     2: 'Estadio 2',
     3: 'Estadio 3'
 })
 
-# Verifica que el DataFrame está bien (opcional para debug)
+# Agrega hover con el índice si no tienes otra variable informativa
+df_pca['ID'] = df_pca.index.astype(str)
+
+# Mostrar el DataFrame por si acaso
 # st.write(df_pca.head())
 
-# Crear gráfico interactivo 3D con Plotly
+# Crear gráfico interactivo
 fig = px.scatter_3d(
     df_pca,
     x='PC1',
     y='PC2',
     z='PC3',
     color='Clase',
+    hover_name='ID',
     color_discrete_sequence=px.colors.qualitative.Set1,
     title='PCA 3D - Componentes Principales',
     labels={'Clase': 'Estadio'},
     opacity=0.7
 )
 
-# Mostrar el gráfico en Streamlit
 st.plotly_chart(fig)
 
 fig3, ax3 = plt.subplots(figsize=(12,8))
