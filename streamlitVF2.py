@@ -1459,7 +1459,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 # --- Filtro único de la subsección (por defecto: Logistic Regression)
 model_name_26 = st.selectbox(
     "Elige el modelo a evaluar en Test",
-    options=["Logistic Regression", "KNN", "SVC", "Decision Tree", "Random Forest"],
+    options=["Logistic Regression", "KNN", "SVC", "Decision Tree", "Random Forest", "ExtraTrees", "HistGradientBoosting"],
     index=0,
     key="model_sel_26"
 )
