@@ -75,7 +75,8 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix,
 )
-
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 import warnings
 warnings.filterwarnings("ignore")
 
