@@ -1492,6 +1492,31 @@ st.text(classification_report(y_test, y_pred))
 st.text("🧩 Matriz de Confusión (Test):")
 st.write(pd.DataFrame(confusion_matrix(y_test, y_pred), index=sorted(y_test.unique()), columns=sorted(y_test.unique())))
 
+# Definir resultados fijos manualmente
+resultados = {
+    "Modelo": [
+        "Random Forest",
+        "KNN",
+        "HistGradientBoosting",
+        "ExtraTrees",
+        "Decision Tree",
+        "SVM",
+        "Logistic Regression"
+    ],
+    "Accuracy CV (media)": [0.9023, 0.9030, 0.8919, 0.8916, 0.8493, 0.8487, 0.5679],
+    "Accuracy CV (std)":   [0.0056, 0.0045, 0.0040, 0.0063, 0.0060, 0.0024, 0.0043],
+    "Accuracy Test":       [0.9128, 0.9110, 0.9017, 0.8998, 0.8659, 0.8567, 0.5756]
+}
+
+# Crear DataFrame
+df_resultados = pd.DataFrame(resultados)
+
+# Ordenar por Accuracy Test (descendente)
+df_resultados = df_resultados.sort_values(by="Accuracy Test", ascending=False)
+
+# Mostrar en Streamlit
+st.markdown("### 📊 Resumen Comparativo de Modelos")
+st.dataframe(df_resultados.style.format(precision=4), use_container_width=True)
 
 
 # === FIN SECCIÓN 2 ===
