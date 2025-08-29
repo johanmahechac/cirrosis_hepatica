@@ -1298,26 +1298,39 @@ st.markdown("""## 2.4. Modelado""")
 # --- Filtro único de la subsección (por defecto: Logistic Regression)
 model_name_24 = st.selectbox(
     "Elige el modelo a evaluar (CV 5-fold)",
-    options=["Logistic Regression", "KNN", "SVC", "Decision Tree", "Random Forest"],
-    index=0,  # Logistic Regression por defecto
+    options=[
+        "Logistic Regression", "KNN", "SVC", 
+        "Decision Tree", "Random Forest", 
+        "ExtraTrees", "HistGradientBoosting"
+    ],
+    index=0,
     key="model_sel_24"
 )
 
 # --- Construcción del modelo según selección
 def build_model(name: str):
     if name == "Logistic Regression":
-        return LogisticRegression(multi_class="multinomial", solver="lbfgs", max_iter=2000, class_weight="balanced", random_state=42)
+        return LogisticRegression(
+            multi_class="multinomial", 
+            solver="lbfgs", 
+            max_iter=2000, 
+            class_weight="balanced", 
+            random_state=42
+        )
     if name == "KNN":
-        return KNeighborsClassifier()
+        return KNeighborsClassifier(random_state=42)
     if name == "SVC":
-        return SVC()  # por defecto rbf; podrías envolver en Pipeline con StandardScaler si lo deseas
+        return SVC(random_state=42)
     if name == "Decision Tree":
         return DecisionTreeClassifier(random_state=42)
     if name == "Random Forest":
         return RandomForestClassifier(random_state=42)
+    if name == "ExtraTrees":
+        return ExtraTreesClassifier(random_state=42)
+    if name == "HistGradientBoosting":
+        return HistGradientBoostingClassifier(random_state=42)
+    
     raise ValueError("Modelo no soportado")
-
-modelo_24 = build_model(model_name_24)
 
 # --- CV estratificado para mayor estabilidad
 cv5 = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
@@ -1334,13 +1347,17 @@ from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import randint, uniform, loguniform
 
 # --- Filtro único de la subsección (por defecto: Logistic Regression)
+
 model_name_25 = st.selectbox(
     "Elige el modelo a ajustar (RandomizedSearchCV)",
-    options=["Logistic Regression", "KNN", "SVC", "Decision Tree", "Random Forest"],
+    options=[
+        "Logistic Regression", "KNN", "SVC", 
+        "Decision Tree", "Random Forest",
+        "ExtraTrees", "HistGradientBoosting" 
+    ],
     index=0,
     key="model_sel_25"
 )
-
 # --- Espacios de búsqueda por modelo (evitando combinaciones inválidas)
 def get_model_and_searchspace(name: str):
     if name == "Logistic Regression":
@@ -1383,6 +1400,26 @@ def get_model_and_searchspace(name: str):
             "min_samples_split": randint(2, 20),
             "min_samples_leaf": randint(1, 20),
             "max_features": ["sqrt", "log2", None],
+        }
+        return model, param_dist, "accuracy"
+    if name == "ExtraTrees":
+        model = ExtraTreesClassifier(random_state=42, n_jobs=-1)
+        param_dist = {
+            "n_estimators": randint(50, 200),
+            "max_depth": randint(5, 30),
+            "min_samples_split": randint(2, 20),
+            "min_samples_leaf": randint(1, 20),
+            "max_features": ["sqrt", "log2", None],
+            "bootstrap": [True, False],
+        }
+        return model, param_dist, "accuracy"
+    if name == "HistGradientBoosting":
+        model = HistGradientBoostingClassifier(random_state=42)
+        param_dist = {
+            "max_iter": randint(50, 200),
+            "learning_rate": [0.01, 0.05, 0.1, 0.2],
+            "max_depth": randint(2, 10),
+            "max_leaf_nodes": randint(10, 50),
         }
         return model, param_dist, "accuracy"
     raise ValueError("Modelo no soportado")
